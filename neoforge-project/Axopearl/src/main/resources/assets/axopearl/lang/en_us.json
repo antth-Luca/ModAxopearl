@@ -1,0 +1,13 @@
+{
+  "itemGroup.axopearl": "Example Mod Tab",
+  "block.axopearl.example_block": "Example Block",
+  "item.axopearl.example_item": "Example Item",
+
+  "axopearl.configuration.title": "Axopearl Configs",
+  "axopearl.configuration.section.axopearl.common.toml": "Axopearl Configs",
+  "axopearl.configuration.section.axopearl.common.toml.title": "Axopearl Configs",
+  "axopearl.configuration.items": "Item List",
+  "axopearl.configuration.logDirtBlock": "Log Dirt Block",
+  "axopearl.configuration.magicNumberIntroduction": "Magic Number Text",
+  "axopearl.configuration.magicNumber": "Magic Number"
+}

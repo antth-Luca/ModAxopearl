@@ -5,7 +5,6 @@ import io.github.antthluca.axopearl.init.InitItems;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.fml.ModContainer;
 
@@ -18,9 +17,7 @@ public class Axopearl {
         // Init
         InitItems.ITEMS.register(bus);
 
-        //InitCreativeTabs.TABS.register(bus);
-
-        NeoForge.EVENT_BUS.register(this);
+        InitCreativeTabs.TABS.register(bus);
 
         // Register the item to a vanilla creative tab
         bus.addListener(this::addCreative);

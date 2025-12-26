@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "axopearl:item/techpearl_of_mobility"
+    }
+}

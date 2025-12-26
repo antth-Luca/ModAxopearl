@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "  I",
+        " A ",
+        "I  "
+    ],
+    "key": {
+        "I": "minecraft:iron_nugget",
+        "A": "minecraft:amethyst_shard"
+    },
+    "result": {
+        "id": "axopearl:axo_capacitor",
+        "count": 1
+    }
+}

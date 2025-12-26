@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "II",
+        "I "
+    ],
+    "key": {
+        "I": "minecraft:iron_nugget"
+    },
+    "result": {
+        "id": "axopearl:iron_node",
+        "count": 1
+    }
+}

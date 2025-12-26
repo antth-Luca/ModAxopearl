@@ -1,0 +1,10 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": "axopearl:calcium_paste",
+    "result": {
+        "id": "axopearl:calcium_shell",
+        "count": 1
+    },
+    "experience": 0.1,
+    "cookingtime": 200
+}

@@ -1,6 +1,7 @@
 package io.github.antthluca.axopearl;
 
 import io.github.antthluca.axopearl.init.InitCreativeTabs;
+import io.github.antthluca.axopearl.init.InitDataComponentTypes;
 import io.github.antthluca.axopearl.init.InitItems;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
@@ -18,6 +19,7 @@ public class Axopearl {
         InitItems.ITEMS.register(bus);
 
         InitCreativeTabs.TABS.register(bus);
+        InitDataComponentTypes.DATA_COMPONENTS.register(bus);
 
         // Register the item to a vanilla creative tab
         bus.addListener(this::addCreative);

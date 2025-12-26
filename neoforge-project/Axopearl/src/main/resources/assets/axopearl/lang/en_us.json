@@ -1,6 +1,8 @@
 {
   "creativetab.axopearl": "AxoPearl",
 
+  "container.axolotl_shelter.axolotls": "Axolotls: %s / %s",
+
   "item.axopearl.air_rune": "Air Rune",
   "item.axopearl.axo_capacitor": "AXO Capacitor",
   "item.axopearl.axo_core": "AXO Core",

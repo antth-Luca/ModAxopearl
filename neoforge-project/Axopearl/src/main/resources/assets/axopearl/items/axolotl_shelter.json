@@ -1,6 +1,20 @@
 {
-    "model": {
-        "type": "minecraft:model",
-        "model": "axopearl:block/axolotl_shelter"
-    }
+  "model": {
+    "type": "minecraft:select",
+    "block_state_property": "goo_level",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "axopearl:block/axolotl_shelter_goo"
+        },
+        "when": "5"
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "axopearl:block/axolotl_shelter_empty"
+    },
+    "property": "minecraft:block_state"
+  }
 }

@@ -1,7 +1,94 @@
 {
   "variants": {
-    "": {
-      "model": "axopearl:block/axolotl_shelter"
+    "facing=east,goo_level=0": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 90
+    },
+    "facing=east,goo_level=1": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 90
+    },
+    "facing=east,goo_level=2": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 90
+    },
+    "facing=east,goo_level=3": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 90
+    },
+    "facing=east,goo_level=4": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 90
+    },
+    "facing=east,goo_level=5": {
+      "model": "axopearl:block/axolotl_shelter_goo",
+      "y": 90
+    },
+    "facing=north,goo_level=0": {
+      "model": "axopearl:block/axolotl_shelter_empty"
+    },
+    "facing=north,goo_level=1": {
+      "model": "axopearl:block/axolotl_shelter_empty"
+    },
+    "facing=north,goo_level=2": {
+      "model": "axopearl:block/axolotl_shelter_empty"
+    },
+    "facing=north,goo_level=3": {
+      "model": "axopearl:block/axolotl_shelter_empty"
+    },
+    "facing=north,goo_level=4": {
+      "model": "axopearl:block/axolotl_shelter_empty"
+    },
+    "facing=north,goo_level=5": {
+      "model": "axopearl:block/axolotl_shelter_goo"
+    },
+    "facing=south,goo_level=0": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 180
+    },
+    "facing=south,goo_level=1": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 180
+    },
+    "facing=south,goo_level=2": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 180
+    },
+    "facing=south,goo_level=3": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 180
+    },
+    "facing=south,goo_level=4": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 180
+    },
+    "facing=south,goo_level=5": {
+      "model": "axopearl:block/axolotl_shelter_goo",
+      "y": 180
+    },
+    "facing=west,goo_level=0": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 270
+    },
+    "facing=west,goo_level=1": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 270
+    },
+    "facing=west,goo_level=2": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 270
+    },
+    "facing=west,goo_level=3": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 270
+    },
+    "facing=west,goo_level=4": {
+      "model": "axopearl:block/axolotl_shelter_empty",
+      "y": 270
+    },
+    "facing=west,goo_level=5": {
+      "model": "axopearl:block/axolotl_shelter_goo",
+      "y": 270
     }
   }
 }

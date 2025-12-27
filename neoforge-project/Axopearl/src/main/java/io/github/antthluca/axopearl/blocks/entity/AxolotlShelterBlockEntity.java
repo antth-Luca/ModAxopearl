@@ -106,8 +106,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
     protected void applyImplicitComponents(DataComponentGetter dataComponentGetter) {
         super.applyImplicitComponents(dataComponentGetter);
         this.stored.clear();
-        List<AxolotlShelterBlockEntity.Occupant> list = dataComponentGetter
-                .getOrDefault(InitDataComponentTypes.AXOLOTLS, Axolotls.EMPTY).axolotls();
+        List<Occupant> list = ((Axolotls) dataComponentGetter.getOrDefault(InitDataComponentTypes.AXOLOTLS.get(), Axolotls.EMPTY)).axolotls();
         list.forEach(this::storeAxolotl);
     }
 

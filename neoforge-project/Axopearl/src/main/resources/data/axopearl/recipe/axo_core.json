@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IGI",
+        "GCG",
+        "IGI"
+    ],
+    "key": {
+        "I": "minecraft:iron_nugget",
+        "G": "minecraft:gold_nugget",
+        "C": "axopearl:axo_capacitor"
+    },
+    "result": {
+        "id": "axopearl:axo_core",
+        "count": 1
+    }
+}

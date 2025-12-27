@@ -15,8 +15,9 @@ public class InitBlocks {
     // Blocks
     public static final DeferredBlock<Block> AXOLOTL_SHELTER = BLOCKS.registerBlock(
         "axolotl_shelter", (properties) -> new AxolotlShelterBlock(properties
-                .mapColor(MapColor.TERRACOTTA_RED)
-                .instrument(NoteBlockInstrument.BASS)
-                .strength(0.6F)
-                .sound(SoundType.STONE)));
+            .mapColor(MapColor.COLOR_RED)
+            .strength(2.0F, 6.0F)
+            .sound(SoundType.STONE)
+            .instrument(NoteBlockInstrument.BASEDRUM)
+        ));
 }

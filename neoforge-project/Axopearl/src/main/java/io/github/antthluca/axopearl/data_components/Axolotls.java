@@ -25,6 +25,6 @@ public record Axolotls(List<AxolotlShelterBlockEntity.Occupant> axolotls) implem
 
     @Override
     public void addToTooltip(Item.TooltipContext item$tooltipCtx, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) {
-        consumer.accept(Component.translatable("container.axolotl_shelter.axolotls", this.axolotls.size(), 3).withStyle(ChatFormatting.GRAY));
+        consumer.accept(Component.translatable("container.axolotl_shelter.axolotls", this.axolotls.size(), AxolotlShelterBlockEntity.MAX_OCCUPANTS).withStyle(ChatFormatting.GRAY));
     }
 }

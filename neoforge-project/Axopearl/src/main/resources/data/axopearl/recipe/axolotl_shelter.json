@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " B ",
+        "B B",
+        "BSB"
+    ],
+    "key": {
+        "B": "minecraft:brick",
+        "S": "minecraft:glow_ink_sac"
+    },
+    "result": {
+        "id": "axopearl:axolotl_shelter",
+        "count": 1
+    }
+}

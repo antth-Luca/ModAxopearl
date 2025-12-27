@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import com.mojang.serialization.MapCodec;
 
 import io.github.antthluca.axopearl.Axopearl;
-import io.github.antthluca.axopearl.loot.AddItemModifier;
+import io.github.antthluca.axopearl.loot.ReplaceItemModifier;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -15,6 +15,6 @@ public class InitLootModifiers {
         NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Axopearl.MODID);
 
     // Loot Modifiers
-    public static final Supplier<MapCodec<? extends IGlobalLootModifier>> ADD_ITEM = LOOT_MODIFIERS.register(
-        "add_item", () -> AddItemModifier.CODEC);
+    public static final Supplier<MapCodec<? extends IGlobalLootModifier>> REPLACE_ITEM = LOOT_MODIFIERS.register(
+        "replace_item", () -> ReplaceItemModifier.CODEC);
 }

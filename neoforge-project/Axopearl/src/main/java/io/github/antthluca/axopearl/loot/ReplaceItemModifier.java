@@ -12,14 +12,14 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 
-public class AddItemModifier extends LootModifier {
-    public static final MapCodec<AddItemModifier> CODEC = RecordCodecBuilder.mapCodec(inst ->
+public class ReplaceItemModifier extends LootModifier {
+    public static final MapCodec<ReplaceItemModifier> CODEC = RecordCodecBuilder.mapCodec(inst ->
         LootModifier.codecStart(inst).and(
-            BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(e -> e.item)).apply(inst, AddItemModifier::new));
+            BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(e -> e.item)).apply(inst, ReplaceItemModifier::new));
 
     private final Item item;
 
-    public AddItemModifier(LootItemCondition[] conditionsIn, Item item) {
+    public ReplaceItemModifier(LootItemCondition[] conditionsIn, Item item) {
         super(conditionsIn);
         this.item = item;
     }
@@ -31,6 +31,7 @@ public class AddItemModifier extends LootModifier {
                 return generatedLoot;
             }
         }
+        generatedLoot.clear();
         generatedLoot.add(new ItemStack(this.item));
         return generatedLoot;
     }

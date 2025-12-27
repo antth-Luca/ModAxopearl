@@ -1,0 +1,58 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "predicates": {
+                      "minecraft:enchantments": [
+                        {
+                          "enchantments": "minecraft:silk_touch",
+                          "levels": {
+                            "min": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "functions": [
+                {
+                  "function": "minecraft:copy_components",
+                  "include": [
+                    "axopearl:axolotls"
+                  ],
+                  "source": "block_entity"
+                },
+                {
+                  "block": "axopearl:axolotl_shelter",
+                  "function": "minecraft:copy_state",
+                  "properties": [
+                    "goo_level"
+                  ]
+                }
+              ],
+              "name": "axopearl:axolotl_shelter"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "axopearl:axolotl_shelter"
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "axopearl:blocks/axolotl_shelter"
+}

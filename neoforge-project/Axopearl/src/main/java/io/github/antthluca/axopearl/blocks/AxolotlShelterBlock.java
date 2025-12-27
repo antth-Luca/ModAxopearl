@@ -4,20 +4,17 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
 import com.mojang.serialization.MapCodec;
 
 import io.github.antthluca.axopearl.blocks.entity.AxolotlShelterBlockEntity;
 import io.github.antthluca.axopearl.init.InitBlockEntities;
 import io.github.antthluca.axopearl.init.InitItems;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -50,7 +47,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -62,7 +58,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -182,9 +177,9 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
 
     @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder lootParams) {
-        Entity entity = (Entity)lootParams.getOptionalParameter(LootContextParams.THIS_ENTITY);
+        Entity entity = (Entity) lootParams.getOptionalParameter(LootContextParams.THIS_ENTITY);
         if (entity instanceof PrimedTnt || entity instanceof Creeper || entity instanceof WitherSkull || entity instanceof WitherBoss || entity instanceof MinecartTNT) {
-            BlockEntity blockentity = (BlockEntity)lootParams.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+            BlockEntity blockentity = (BlockEntity) lootParams.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
             if (blockentity instanceof AxolotlShelterBlockEntity) {
                 AxolotlShelterBlockEntity axolotlShelterBlockEntity = (AxolotlShelterBlockEntity) blockentity;
                 axolotlShelterBlockEntity.emptyAllLivingFromShelter((Player) null, state);
@@ -235,7 +230,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide() ? null : createTickerHelper(blockEntityType, InitBlockEntities.AXOLOTL_SHELTER.get(), AxolotlShelterBlockEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(blockEntityType, InitBlockEntities.AXOLOTL_SHELTER_BE.get(), AxolotlShelterBlockEntity::serverTick);
     }
 
     // MAIN

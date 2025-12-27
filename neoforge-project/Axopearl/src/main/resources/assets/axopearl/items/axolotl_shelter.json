@@ -1,6 +1,6 @@
 {
     "model": {
         "type": "minecraft:model",
-        "model": "axopearl:item/axolotl_shelter"
+        "model": "axopearl:block/axolotl_shelter"
     }
 }

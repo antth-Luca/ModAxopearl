@@ -29,7 +29,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.debug.DebugValueSource;
 import net.minecraft.world.entity.Entity;
@@ -42,7 +41,6 @@ import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -132,7 +130,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
 
     // MAIN
     public AxolotlShelterBlockEntity(BlockPos pos, BlockState state) {
-        super(InitBlockEntities.AXOLOTL_SHELTER.get(), pos, state);
+        super(InitBlockEntities.AXOLOTL_SHELTER_BE.get(), pos, state);
     }
 
     public boolean isFireNearby() {

@@ -13,8 +13,8 @@ public class InitBlockEntities {
         BuiltInRegistries.BLOCK_ENTITY_TYPE, Axopearl.MODID);
 
     // Block Entities
-    public static final Supplier<BlockEntityType<AxolotlShelterBlockEntity>> AXOLOTL_SHELTER = BLOCK_ENTITIES.register(
-        "pedestal_be", () -> new BlockEntityType<>(
+    public static final Supplier<BlockEntityType<AxolotlShelterBlockEntity>> AXOLOTL_SHELTER_BE = BLOCK_ENTITIES.register(
+        "axolotl_shelter_be", () -> new BlockEntityType<>(
                     AxolotlShelterBlockEntity::new,
                     InitBlocks.AXOLOTL_SHELTER.get()));
 }

@@ -9,6 +9,7 @@ import io.github.antthluca.axopearl.init.InitItems;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.fml.ModContainer;
 
 @Mod(Axopearl.MODID)
@@ -21,11 +22,24 @@ public class Axopearl {
         InitItems.ITEMS.register(bus);
 
         InitBlocks.BLOCKS.register(bus);
-        InitBlockItems.BLOCK_ITEMS.register(bus);
         InitBlockEntities.BLOCK_ENTITIES.register(bus);
+        InitBlockItems.BLOCK_ITEMS.register(bus);
 
         InitDataComponentTypes.DATA_COMPONENTS.register(bus);
 
         InitCreativeTabs.TABS.register(bus);
+
+        // Register the item to a vanilla creative tab
+        bus.addListener(this::addCreative);
+    }
+
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        // if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            // TODO: Adicionar;
+        // }
+
+        // if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+            // TODO: Adicionar;
+        // }
     }
 }

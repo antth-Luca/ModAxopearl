@@ -1,0 +1,20 @@
+package io.github.antthluca.axopearl.init;
+
+import java.util.function.Supplier;
+
+import io.github.antthluca.axopearl.Axopearl;
+import io.github.antthluca.axopearl.blocks.entity.AxolotlShelterBlockEntity;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public class InitBlockEntities {
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE, Axopearl.MODID);
+
+    // Block Entities
+    public static final Supplier<BlockEntityType<AxolotlShelterBlockEntity>> AXOLOTL_SHELTER = BLOCK_ENTITIES.register(
+        "pedestal_be", () -> new BlockEntityType<>(
+                    AxolotlShelterBlockEntity::new,
+                    InitBlocks.AXOLOTL_SHELTER.get()));
+}

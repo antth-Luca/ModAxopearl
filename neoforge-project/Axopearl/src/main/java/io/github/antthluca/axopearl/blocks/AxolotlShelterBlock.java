@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.MapCodec;
 
 import io.github.antthluca.axopearl.blocks.entity.AxolotlShelterBlockEntity;
+import io.github.antthluca.axopearl.init.InitBlockEntities;
 import io.github.antthluca.axopearl.init.InitItems;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -186,7 +187,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
             BlockEntity blockentity = (BlockEntity)lootParams.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
             if (blockentity instanceof AxolotlShelterBlockEntity) {
                 AxolotlShelterBlockEntity axolotlShelterBlockEntity = (AxolotlShelterBlockEntity) blockentity;
-                axolotlShelterBlockEntity.emptyAllLivingFromHive((Player) null, state);
+                axolotlShelterBlockEntity.emptyAllLivingFromShelter((Player) null, state);
             }
         }
 
@@ -209,7 +210,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
             BlockEntity blockEnt = levelReader.getBlockEntity(pos);
             if (blockEnt instanceof AxolotlShelterBlockEntity) {
                 AxolotlShelterBlockEntity axolotlShelterBlockEntity = (AxolotlShelterBlockEntity) blockEnt;
-                axolotlShelterBlockEntity.emptyAllLivingFromHive((Player) null, state);
+                axolotlShelterBlockEntity.emptyAllLivingFromShelter((Player) null, state);
             }
         }
 
@@ -234,8 +235,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        // TODO: Trocar a BlockEntityType ao registrar o bloco;
-        return level.isClientSide() ? null : createTickerHelper(blockEntityType, BlockEntityType.BEEHIVE, AxolotlShelterBlockEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(blockEntityType, InitBlockEntities.AXOLOTL_SHELTER.get(), AxolotlShelterBlockEntity::serverTick);
     }
 
     // MAIN

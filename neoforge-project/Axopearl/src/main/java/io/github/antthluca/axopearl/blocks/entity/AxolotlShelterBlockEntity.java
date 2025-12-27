@@ -15,7 +15,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import io.github.antthluca.axopearl.blocks.AxolotlShelterBlock;
 import io.github.antthluca.axopearl.data_components.Axolotls;
+import io.github.antthluca.axopearl.init.InitBlockEntities;
 import io.github.antthluca.axopearl.init.InitDataComponentTypes;
+import io.github.antthluca.axopearl.utils.AxopearlTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
@@ -130,8 +132,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
 
     // MAIN
     public AxolotlShelterBlockEntity(BlockPos pos, BlockState state) {
-        // TODO: Alterar o BlockEntityType após registros;
-        super(BlockEntityType.BEEHIVE, pos, state);
+        super(InitBlockEntities.AXOLOTL_SHELTER.get(), pos, state);
     }
 
     public boolean isFireNearby() {
@@ -277,8 +278,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
         }
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state,
-            AxolotlShelterBlockEntity axolotlShelter) {
+    public static void serverTick(Level level, BlockPos pos, BlockState state, AxolotlShelterBlockEntity axolotlShelter) {
         tickOccupants(level, pos, state, axolotlShelter.stored);
         if (!axolotlShelter.stored.isEmpty() && level.getRandom().nextDouble() < 0.005) {
             double d0 = pos.getX() + 0.5;
@@ -361,8 +361,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
             AxolotlShelterBlockEntity.IGNORED_AXOLOTL_TAGS.forEach(compoundtag::remove);
             Entity entity = EntityType.loadEntityRecursive(this.entityData.type(), compoundtag, level,
                     EntitySpawnReason.LOAD, ent -> ent);
-            // TODO: Usar EntityTypeTags.AXOLOTL_SHELTER_INHABITORS;
-            if (entity != null && entity.getType().is(EntityTypeTags.BEEHIVE_INHABITORS)) {
+            if (entity != null && entity.getType().is(AxopearlTags.EntityTypeTags.AXOLOTL_SHELTER_INHABITORS)) {
                 entity.setNoGravity(true);
                 if (entity instanceof Axolotl axolotl) {
                     setAxolotlReleaseData(this.ticksInShelter, axolotl);

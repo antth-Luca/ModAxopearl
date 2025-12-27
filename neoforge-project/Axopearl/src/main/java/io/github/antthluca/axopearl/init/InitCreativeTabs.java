@@ -20,6 +20,7 @@ public class InitCreativeTabs {
             .icon(() -> InitItems.AXOPEARL.toStack())
             .displayItems((displayParams, output) -> {
                 InitItems.ITEMS.getEntries().forEach(item -> output.accept(item.get()));
+                InitBlockItems.BLOCK_ITEMS.getEntries().forEach(item -> output.accept(item.get()));
             }).build()
     );
 }

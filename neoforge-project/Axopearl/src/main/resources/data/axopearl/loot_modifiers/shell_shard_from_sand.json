@@ -1,0 +1,14 @@
+{
+  "type": "axopearl:add_item",
+  "conditions": [
+    {
+      "block": "minecraft:sand",
+      "condition": "minecraft:block_state_property"
+    },
+    {
+      "chance": 0.25,
+      "condition": "minecraft:random_chance"
+    }
+  ],
+  "item": "axopearl:shell_shard"
+}

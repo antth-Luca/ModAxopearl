@@ -6,6 +6,7 @@ import io.github.antthluca.axopearl.init.InitBlocks;
 import io.github.antthluca.axopearl.init.InitCreativeTabs;
 import io.github.antthluca.axopearl.init.InitDataComponentTypes;
 import io.github.antthluca.axopearl.init.InitItems;
+import io.github.antthluca.axopearl.init.InitLootModifiers;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -28,6 +29,7 @@ public class Axopearl {
         InitDataComponentTypes.DATA_COMPONENTS.register(bus);
 
         InitCreativeTabs.TABS.register(bus);
+        InitLootModifiers.LOOT_MODIFIERS.register(bus);
 
         // Register the item to a vanilla creative tab
         bus.addListener(this::addCreative);

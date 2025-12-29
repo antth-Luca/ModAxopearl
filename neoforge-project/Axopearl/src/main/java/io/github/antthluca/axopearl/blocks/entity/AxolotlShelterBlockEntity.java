@@ -36,16 +36,15 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
 
 public class AxolotlShelterBlockEntity extends BlockEntity {
     static final Logger LOGGER = LogUtils.getLogger();
@@ -79,15 +78,6 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
     private final List<AxolotlShelterBlockEntity.AxolotlData> stored = Lists.newArrayList();
 
     // SUPER
-    @Override
-    public void setChanged() {
-        if (this.isFireNearby()) {
-            this.emptyAllLivingFromShelter(null, this.level.getBlockState(this.getBlockPos()));
-        }
-
-        super.setChanged();
-    }
-
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
@@ -132,21 +122,6 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
         super(InitBlockEntities.AXOLOTL_SHELTER_BE.get(), pos, state);
     }
 
-    public boolean isFireNearby() {
-        if (this.level == null) {
-            return false;
-        } else {
-            for (BlockPos blockpos : BlockPos.betweenClosed(this.worldPosition.offset(-1, -1, -1),
-                    this.worldPosition.offset(1, 1, 1))) {
-                if (this.level.getBlockState(blockpos).getBlock() instanceof FireBlock) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
     public boolean isEmpty() {
         return this.stored.isEmpty();
     }
@@ -155,27 +130,12 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
         return this.stored.size() == MAX_OCCUPANTS;
     }
 
-    public void emptyAllLivingFromShelter(@Nullable Player player, BlockState state) {
-        List<Entity> list = this.releaseAllOccupants(state);
-        if (player != null) {
-            for (Entity entity : list) {
-                if (entity instanceof Axolotl axolotl && player.position().distanceToSqr(entity.position()) <= 16.0) {
-                    axolotl.setTarget(player);
-                }
-            }
-        }
-    }
-
-    private List<Entity> releaseAllOccupants(BlockState state) {
+    public void releaseAllOccupants(BlockState state) {
         List<Entity> list = Lists.newArrayList();
-        this.stored
-                .removeIf(axolotlData -> releaseOccupant(this.level, this.worldPosition, state,
-                        axolotlData.toOccupant(), list));
+        this.stored.removeIf(axolotlData -> releaseOccupant(this.level, this.worldPosition, state, axolotlData.toOccupant(), list));
         if (!list.isEmpty()) {
             super.setChanged();
         }
-
-        return list;
     }
 
     public int getOccupantCount() {
@@ -183,7 +143,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
     }
 
     public static int getGooLevel(BlockState state) {
-        return state.getValue(AxolotlShelterBlock.GOO_LEVEL);
+        return (Integer) state.getValue(AxolotlShelterBlock.GOO_LEVEL);
     }
 
     public void addOccupant(Axolotl axolotl) {
@@ -194,18 +154,18 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
             this.storeAxolotl(AxolotlShelterBlockEntity.Occupant.of(axolotl));
             if (this.level != null) {
                 BlockPos blockpos = this.getBlockPos();
-                this.level
-                        .playSound(
-                                null,
-                                (double) blockpos.getX(),
-                                (double) blockpos.getY(),
-                                (double) blockpos.getZ(),
-                                SoundEvents.BEEHIVE_ENTER,
-                                SoundSource.BLOCKS,
-                                1.0F,
-                                1.0F);
-                this.level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos,
-                        GameEvent.Context.of(axolotl, this.getBlockState()));
+                this.level.playSound(
+                    null,
+                    (double) blockpos.getX(),
+                    (double) blockpos.getY(),
+                    (double) blockpos.getZ(),
+                    SoundEvents.BEEHIVE_ENTER,
+                    SoundSource.BLOCKS,
+                    1.0F,
+                    1.0F
+                );
+                this.level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(axolotl, this.getBlockState())
+                );
             }
 
             axolotl.discard();
@@ -217,8 +177,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
         this.stored.add(new AxolotlShelterBlockEntity.AxolotlData(occupant));
     }
 
-    private static boolean releaseOccupant(Level level, BlockPos pos, BlockState state,
-            AxolotlShelterBlockEntity.Occupant occupant, @Nullable List<Entity> storedInShelters) {
+    private static boolean releaseOccupant(Level level, BlockPos pos, BlockState state, AxolotlShelterBlockEntity.Occupant occupant, @Nullable List<Entity> storedInShelters) {
         if (Bee.isNightOrRaining(level)) {
             return false;
         } else {
@@ -231,6 +190,18 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
                 Entity entity = occupant.createEntity(level, pos);
                 if (entity != null) {
                     if (entity instanceof Axolotl axolotl) {
+                        if (state.is(AxopearlTags.BlockTags.AXOLOTL_SHELTER, (blockStateBase) -> blockStateBase.hasProperty(AxolotlShelterBlock.GOO_LEVEL))) {
+                            int i = getGooLevel(state);
+                            if (i < AxolotlShelterBlock.MAX_GOO_LEVELS) {
+                                int j = level.random.nextInt(100) == 0 ? 2 : 1;
+                                if (i + j > AxolotlShelterBlock.MAX_GOO_LEVELS) {
+                                    --j;
+                                }
+
+                                level.setBlockAndUpdate(pos, (BlockState) state.setValue(AxolotlShelterBlock.GOO_LEVEL, i + j));
+                            }
+                        }
+
                         if (storedInShelters != null) {
                             storedInShelters.add(axolotl);
                         }
@@ -244,8 +215,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
                     }
 
                     level.playSound(null, pos, SoundEvents.BEEHIVE_EXIT, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    level.gameEvent(GameEvent.BLOCK_CHANGE, pos,
-                            GameEvent.Context.of(entity, level.getBlockState(pos)));
+                    level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(entity, level.getBlockState(pos)));
                     return level.addFreshEntity(entity);
                 } else {
                     return false;
@@ -254,16 +224,14 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
         }
     }
 
-    private static void tickOccupants(
-            Level level, BlockPos pos, BlockState state, List<AxolotlShelterBlockEntity.AxolotlData> data) {
+    private static void tickOccupants(Level level, BlockPos pos, BlockState state, List<AxolotlShelterBlockEntity.AxolotlData> data) {
         boolean flag = false;
         Iterator<AxolotlShelterBlockEntity.AxolotlData> iterator = data.iterator();
 
         while (iterator.hasNext()) {
             AxolotlShelterBlockEntity.AxolotlData axolotlData = iterator.next();
             if (axolotlData.tick()) {
-                if (releaseOccupant(
-                        level, pos, state, axolotlData.toOccupant(), null)) {
+                if (releaseOccupant(level, pos, state, axolotlData.toOccupant(), null)) {
                     flag = true;
                     iterator.remove();
                 }
@@ -276,17 +244,35 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, AxolotlShelterBlockEntity axolotlShelter) {
+        // Stored Axolotls control
         tickOccupants(level, pos, state, axolotlShelter.stored);
+        // Sound
         if (!axolotlShelter.stored.isEmpty() && level.getRandom().nextDouble() < 0.005) {
             double d0 = pos.getX() + 0.5;
             double d1 = pos.getY();
             double d2 = pos.getZ() + 0.5;
-            level.playSound(null, d0, d1, d2, SoundEvents.BEEHIVE_WORK, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, d0, d1, d2, SoundEvents.FOX_SLEEP, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+        // Capturing Axolotls
+        if (level.getGameTime() % 20 == 0 && axolotlShelter.stored.size() < MAX_OCCUPANTS) {
+            AABB area = new AABB(pos).inflate(3.5F);
+            List<Axolotl> axolotls = level.getEntitiesOfClass(Axolotl.class, area);
+            for (Axolotl axo : axolotls) {
+                if (validateAxolotlForCapturing(axo)) {
+                    axolotlShelter.addOccupant(axo);
+                }
+            }
         }
     }
 
     private List<AxolotlShelterBlockEntity.Occupant> getAxolotls() {
         return this.stored.stream().map(AxolotlShelterBlockEntity.AxolotlData::toOccupant).toList();
+    }
+
+    private static boolean validateAxolotlForCapturing(Axolotl axolotl) {
+        return axolotl.isAlive()
+            && !axolotl.isBaby()
+            && !axolotl.isInLove();
     }
 
     // INTERNAL
@@ -305,8 +291,7 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
         }
 
         public AxolotlShelterBlockEntity.Occupant toOccupant() {
-            return new AxolotlShelterBlockEntity.Occupant(this.occupant.entityData, this.ticksInShelter,
-                    this.occupant.minTicksInShelter);
+            return new AxolotlShelterBlockEntity.Occupant(this.occupant.entityData, this.ticksInShelter, this.occupant.minTicksInShelter);
         }
     }
 

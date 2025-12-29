@@ -41,10 +41,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -91,7 +89,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
         super.playerDestroy(level, player, pos, state, blockEnt, stack);
         if (!level.isClientSide() && blockEnt instanceof AxolotlShelterBlockEntity axolotlShelterBlockEntity) {
             if (!EnchantmentHelper.hasTag(stack, EnchantmentTags.PREVENTS_BEE_SPAWNS_WHEN_MINING)) {
-                axolotlShelterBlockEntity.emptyAllLivingFromShelter(player, state);
+                axolotlShelterBlockEntity.releaseAllOccupants(state);
                 Containers.updateNeighboursAfterDestroy(state, level, pos);
             }
 
@@ -158,7 +156,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
                 BlockEntity blockEnt = level.getBlockEntity(pos);
                 if (blockEnt instanceof AxolotlShelterBlockEntity) {
                     AxolotlShelterBlockEntity axolotlShelterBlockEntity = (AxolotlShelterBlockEntity) blockEnt;
-                    int currentGoo = (Integer)state.getValue(GOO_LEVEL);
+                    int currentGoo = (Integer) state.getValue(GOO_LEVEL);
                     boolean flag = !axolotlShelterBlockEntity.isEmpty();
                     if (flag || currentGoo > 0) {
                         ItemStack itemstack = new ItemStack(this);
@@ -182,7 +180,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
             BlockEntity blockentity = (BlockEntity) lootParams.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
             if (blockentity instanceof AxolotlShelterBlockEntity) {
                 AxolotlShelterBlockEntity axolotlShelterBlockEntity = (AxolotlShelterBlockEntity) blockentity;
-                axolotlShelterBlockEntity.emptyAllLivingFromShelter((Player) null, state);
+                axolotlShelterBlockEntity.releaseAllOccupants(state);
             }
         }
 
@@ -197,19 +195,6 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
         }
 
         return itemstack;
-    }
-
-    @Override
-    protected BlockState updateShape(BlockState state, LevelReader levelReader, ScheduledTickAccess scheduleTickAccess, BlockPos pos, Direction dir, BlockPos neighborPos, BlockState neighborState, RandomSource rSource) {
-        if (levelReader.getBlockState(neighborPos).getBlock() instanceof FireBlock) {
-            BlockEntity blockEnt = levelReader.getBlockEntity(pos);
-            if (blockEnt instanceof AxolotlShelterBlockEntity) {
-                AxolotlShelterBlockEntity axolotlShelterBlockEntity = (AxolotlShelterBlockEntity) blockEnt;
-                axolotlShelterBlockEntity.emptyAllLivingFromShelter((Player) null, state);
-            }
-        }
-
-        return super.updateShape(state, levelReader, scheduleTickAccess, pos, dir, neighborPos, neighborState, rSource);
     }
 
     @Override
@@ -240,7 +225,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
     }
 
     public static void dropAxolotlGoo(ServerLevel level, BlockPos pos) {
-        ItemStack stack = InitItems.AXOLOTL_GOO.toStack();
+        ItemStack stack = InitItems.AXOLOTL_GOO.toStack(3);
         popResource(level, pos, stack);
     }
 
@@ -273,7 +258,7 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
                     BlockState blockstate = level.getBlockState(blockpos);
                     VoxelShape voxelshape1 = blockstate.getCollisionShape(level, blockpos);
                     double shape1_y1 = voxelshape1.max(Axis.Y);
-                    if ((shape1_y1 < (double)1.0F || !blockstate.isCollisionShapeFullBlock(level, blockpos)) && blockstate.getFluidState().isEmpty()) {
+                    if ((shape1_y1 < (double)1.0F || !blockstate.isCollisionShapeFullBlock(level, blockpos))) {
                         this.spawnParticle(level, pos, voxelshape, (double)pos.getY() - 0.05);
                     }
                 }

@@ -2,7 +2,6 @@ package io.github.antthluca.axopearl.items;
 
 import java.util.function.Consumer;
 
-import io.github.antthluca.axopearl.Axopearl;
 import io.github.antthluca.axopearl.blocks.AxolotlShelterBlock;
 import io.github.antthluca.axopearl.data_components.Axolotls;
 import io.github.antthluca.axopearl.init.InitBlocks;
@@ -21,12 +20,12 @@ import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.item.component.TooltipDisplay;
 
 public class AxolotlShelterItemBlock extends BlockItem {
-    public AxolotlShelterItemBlock() {
+    public AxolotlShelterItemBlock(ResourceLocation id) {
         super(
             InitBlocks.AXOLOTL_SHELTER.get(),
             new Item.Properties()
                 .useBlockDescriptionPrefix()
-                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Axopearl.MODID, "axolotl_shelter")))
+                .setId(ResourceKey.create(Registries.ITEM, id))
                 .component(InitDataComponentTypes.AXOLOTLS.get(), Axolotls.EMPTY)
                 .component(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY.with(AxolotlShelterBlock.GOO_LEVEL, 0)));
     }

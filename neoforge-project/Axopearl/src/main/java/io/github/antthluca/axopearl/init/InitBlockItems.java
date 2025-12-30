@@ -11,5 +11,5 @@ public class InitBlockItems {
 
     // Block Items
     public static final DeferredItem<Item> AXOLOTL_SHELTER = BLOCK_ITEMS.register(
-        "axolotl_shelter", AxolotlShelterItemBlock::new);
+        "axolotl_shelter", resLocId -> new AxolotlShelterItemBlock(resLocId));
 }

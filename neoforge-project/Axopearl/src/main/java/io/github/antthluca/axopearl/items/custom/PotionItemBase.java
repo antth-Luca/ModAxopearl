@@ -105,10 +105,14 @@ public class PotionItemBase extends Item {
     public void appendHoverText(ItemStack pStack, TooltipContext pContext, TooltipDisplay tooltipDisplay, Consumer<Component> components, TooltipFlag tooltipFlag) {
         super.appendHoverText(pStack, pContext, tooltipDisplay, components, tooltipFlag);
 
-        // Axolotls axolotls = pStack.get(InitDataComponentTypes.AXOLOTLS.get());
-        // axolotls.addToTooltip(pContext, components, tooltipFlag, pStack);
-        // BlockItemStateProperties state = pStack.get(DataComponents.BLOCK_STATE);
-        // components.accept(Component.translatable("container.axolotl_shelter.goo_level", state.get(AxolotlShelterBlock.GOO_LEVEL), AxolotlShelterBlock.MAX_GOO_LEVELS).withStyle(ChatFormatting.GRAY));
+        for (MobEffectInstance effect : this.effectsToApply) {
+            int totalSeconds = effect.getDuration() / 20;
+            components.accept(Component.translatable(
+                "potion.withDuration",
+                Component.translatable(effect.getDescriptionId()),
+                String.format("%02d:%02d", totalSeconds / 60, totalSeconds % 60)
+            ).withStyle(effect. ChatFormatting.BLUE));
+        }
     }
 
     /* Potion methods */

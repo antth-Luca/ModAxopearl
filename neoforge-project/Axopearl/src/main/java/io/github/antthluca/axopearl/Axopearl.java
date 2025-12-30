@@ -7,6 +7,8 @@ import io.github.antthluca.axopearl.init.InitCreativeTabs;
 import io.github.antthluca.axopearl.init.InitDataComponentTypes;
 import io.github.antthluca.axopearl.init.InitItems;
 import io.github.antthluca.axopearl.init.InitLootModifiers;
+import io.github.antthluca.axopearl.init.InitMobEffects;
+import io.github.antthluca.axopearl.init.InitPotions;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -21,16 +23,14 @@ public class Axopearl {
     public Axopearl(IEventBus bus, ModContainer container) {
         // Init
         InitItems.ITEMS.register(bus);
-
         InitBlocks.BLOCKS.register(bus);
         InitBlockEntities.BLOCK_ENTITIES.register(bus);
         InitBlockItems.BLOCK_ITEMS.register(bus);
-
+        InitMobEffects.MOB_EFFECTS.register(bus);
+        InitPotions.POTION_ITEMS.register(bus);
         InitDataComponentTypes.DATA_COMPONENTS.register(bus);
-
         InitCreativeTabs.TABS.register(bus);
         InitLootModifiers.LOOT_MODIFIERS.register(bus);
-
         // Register the item to a vanilla creative tab
         bus.addListener(this::addCreative);
     }
@@ -68,8 +68,13 @@ public class Axopearl {
         }
 
         if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            // Blocks
+            // Block Items
             event.accept(InitBlockItems.AXOLOTL_SHELTER);
+        }
+
+        if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
+            // Potion Items
+            event.accept(InitPotions.POTION_OF_AXOLOTL_BURST_OF_ENERGY);
         }
     }
 }

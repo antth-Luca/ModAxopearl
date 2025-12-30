@@ -4,9 +4,12 @@
   "container.axolotl_shelter.axolotls": "Axolotls: %s / %s",
   "container.axolotl_shelter.goo_level": "Goo: %s / %s",
 
+  "effect.axopearl.axolotl_burst_of_energy": "Axolotl Burst of Energy",
+
   "item.axopearl.air_rune": "Air Rune",
   "item.axopearl.axo_capacitor": "AXO Capacitor",
   "item.axopearl.axo_core": "AXO Core",
+  "item.axopearl.potion_of_axolotl_burst_of_energy": "Potion of Axolotl Burst of Energy",
   "item.axopearl.axolotl_goo": "Axolotl Goo",
   "item.axopearl.axopearl": "AxoPearl",
   "item.axopearl.beacon_component": "Beacon Component",

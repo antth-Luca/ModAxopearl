@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "axopearl:item/potion_of_axolotl_burst_of_energy"
+    }
+}

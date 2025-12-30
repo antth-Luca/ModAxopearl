@@ -17,6 +17,7 @@ import io.github.antthluca.axopearl.blocks.AxolotlShelterBlock;
 import io.github.antthluca.axopearl.data_components.Axolotls;
 import io.github.antthluca.axopearl.init.InitBlockEntities;
 import io.github.antthluca.axopearl.init.InitDataComponentTypes;
+import io.github.antthluca.axopearl.init.InitMobEffects;
 import io.github.antthluca.axopearl.utils.AxopearlTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +32,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.debug.DebugValueSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -73,8 +75,8 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
             "leash",
             "UUID");
     public static final int MAX_OCCUPANTS = 3;
-    private static final int TICKS_BEFORE_REENTERING = 2400;
-    private static final int OCCUPATION_TICKS = 1600;
+    private static final int TICKS_BEFORE_REENTERING = 400;
+    private static final int OCCUPATION_TICKS = 1200;
     private final List<AxolotlShelterBlockEntity.AxolotlData> stored = Lists.newArrayList();
 
     // SUPER
@@ -206,6 +208,8 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
                             storedInShelters.add(axolotl);
                         }
 
+                        axolotl.addEffect(new MobEffectInstance(InitMobEffects.AXOLOTL_BURST_OF_ENERGY, TICKS_BEFORE_REENTERING));
+
                         float f = entity.getBbWidth();
                         double d3 = flag ? 0.0 : 0.55 + f / 2.0F;
                         double d0 = pos.getX() + 0.5 + d3 * direction.getStepX();
@@ -272,7 +276,8 @@ public class AxolotlShelterBlockEntity extends BlockEntity {
     private static boolean validateAxolotlForCapturing(Axolotl axolotl) {
         return axolotl.isAlive()
             && !axolotl.isBaby()
-            && !axolotl.isInLove();
+            && !axolotl.isInLove()
+            && !axolotl.hasEffect(InitMobEffects.AXOLOTL_BURST_OF_ENERGY);
     }
 
     // INTERNAL

@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -111,7 +112,7 @@ public class PotionItemBase extends Item {
                 "potion.withDuration",
                 Component.translatable(effect.getDescriptionId()),
                 String.format("%02d:%02d", totalSeconds / 60, totalSeconds % 60)
-            ).withStyle(effect. ChatFormatting.BLUE));
+            ).withStyle(effect.getEffect().value().getCategory() == MobEffectCategory.BENEFICIAL ? ChatFormatting.BLUE : ChatFormatting.RED));
         }
     }
 

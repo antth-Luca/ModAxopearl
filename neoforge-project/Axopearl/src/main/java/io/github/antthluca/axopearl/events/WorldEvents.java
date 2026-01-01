@@ -25,39 +25,61 @@ public class WorldEvents {
         ItemStack leftItemStack = event.getLeft();
         Item leftItem = leftItemStack.getItem();
 
-        boolean leftEnchantable = leftItemStack.isEnchantable();
-        boolean rightIsPearl = (rightItemStack.isEnchantable() && rightItem == InitItems.WHITE_TECHPEARL.value());
-        System.out.println(String.format("%s | %s", leftEnchantable, rightIsPearl));
-        System.out.println(String.format("rInput: %s | init: %s", rightItem, InitItems.WHITE_TECHPEARL.value()));
-        if (leftEnchantable && rightIsPearl) {
-            ItemEnchantments leftEnchants = EnchantmentHelper.getEnchantmentsForCrafting(leftItemStack);
-            ItemEnchantments rightEnchants = rightItemStack.getOrDefault(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY);
-            ItemEnchantments.Mutable enchantMutable = new ItemEnchantments.Mutable(leftEnchants);
-            boolean changed = false;
-            Iterator iterator = rightEnchants.entrySet().iterator();
-
-            while (iterator.hasNext()) {
-                Object2IntMap.Entry<Holder<Enchantment>> entry = (Object2IntMap.Entry) iterator.next();
-                Holder<Enchantment> key = (Holder) entry.getKey();
-                boolean canEnchant = ((Enchantment) key.value()).definition().supportedItems().contains(leftItemStack.getItemHolder());
-                if (canEnchant) {
-                    int rightLevel = entry.getIntValue();
-                    int leftLevel = enchantMutable.getLevel(key);
-                    int finalLevel = Math.max(leftLevel, rightLevel);
-                    enchantMutable.set(key, finalLevel);
-                    if (finalLevel != leftLevel) {
-                        changed = true;
-                    }
-                }
+        // (->) Is White Pearl
+        if (rightItem == InitItems.WHITE_TECHPEARL.value()) {
+            ItemEnchantments rightEnchants = rightItemStack.get(DataComponents.ENCHANTMENTS);
+            // In case unenchanted White Pearl
+            if (rightEnchants == null || rightEnchants.isEmpty()) {
+                event.setCanceled(true);
+                return;
             }
 
+            boolean changed = false;
+            ItemEnchantments leftEnchants = EnchantmentHelper.getEnchantmentsForCrafting(leftItemStack);
+            ItemEnchantments.Mutable leftEnchantMutable = new ItemEnchantments.Mutable(leftEnchants);
+            int expCost = 1;
+            // (<-) Is any enchantable item
+            if (leftItemStack.isEnchantable()) {
+                // Enchanting the left item
+                Iterator iterator = rightEnchants.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Object2IntMap.Entry<Holder<Enchantment>> rightEntry = (Object2IntMap.Entry) iterator.next();
+                    Holder<Enchantment> rightKey = (Holder) rightEntry.getKey();
+                    boolean canEnchant = ((Enchantment) rightKey.value()).definition().supportedItems().contains(leftItemStack.getItemHolder());
+                    if (canEnchant) {
+                        for (Holder<Enchantment> leftKey : leftEnchantMutable.keySet()) {
+                            if (!Enchantment.areCompatible(rightKey, leftKey)) {
+                                canEnchant = false;
+                                break;
+                            }
+                        }
+
+                        if (canEnchant) {
+                            int rightLevel = rightEntry.getIntValue();
+                            int leftLevel = leftEnchantMutable.getLevel(rightKey);
+                            int finalLevel = leftLevel == rightLevel ? rightLevel + 1 : Math.max(leftLevel, rightLevel);
+                            if (finalLevel != leftLevel) {
+                                changed = true;
+                                leftEnchantMutable.set(rightKey, finalLevel);
+                                expCost += finalLevel - 1;
+                            }
+                        }
+                    }
+                }
+            // (<-) Is White Pearl
+            } else if (leftItemStack.is(InitItems.WHITE_TECHPEARL)) {
+                // TODO: Adicionar a soma de duas pérolas brancas;
+            }
+            // Event
             if (!changed) {
                 event.setCanceled(true);
             } else {
                 ItemStack result = leftItemStack.copy();
-                EnchantmentHelper.setEnchantments(result, enchantMutable.toImmutable());
+                EnchantmentHelper.setEnchantments(result, leftEnchantMutable.toImmutable());
+                result.set(DataComponents.REPAIR_COST, 0);
                 event.setOutput(result);
                 event.setMaterialCost(1);
+                event.setXpCost(Math.min(expCost, 39));
             }
         }
     }

@@ -1,7 +1,7 @@
 package io.github.antthluca.axopearl.init;
 
 import io.github.antthluca.axopearl.Axopearl;
-import io.github.antthluca.axopearl.items.WhiteTechPearlItem;
+import io.github.antthluca.axopearl.items.EnchantedTechPearlItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -67,8 +67,11 @@ public class InitItems {
     public static final DeferredItem<Item> CALCIUM_SHELL = ITEMS.registerItem(
         "calcium_shell", Item::new);
     
-    public static final DeferredItem<Item> WHITE_TECHPEARL = ITEMS.register(
-        "white_techpearl", resLocId -> new WhiteTechPearlItem(resLocId));
+    public static final DeferredItem<Item> WHITE_TECHPEARL = ITEMS.registerItem(
+        "white_techpearl", Item::new);
+
+    public static final DeferredItem<Item> ENCHANTED_TECHPEARL = ITEMS.register(
+        "enchanted_techpearl", resLocId -> new EnchantedTechPearlItem(resLocId));
 
     public static final DeferredItem<Item> TECHPEARL_OF_INFINITY = ITEMS.registerItem(
         "techpearl_of_infinity", Item::new);

@@ -9,6 +9,7 @@ import io.github.antthluca.axopearl.init.InitItems;
 import io.github.antthluca.axopearl.init.InitLootModifiers;
 import io.github.antthluca.axopearl.init.InitMobEffects;
 import io.github.antthluca.axopearl.init.InitPotions;
+import io.github.antthluca.axopearl.init.InitRecipeSerializers;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -30,6 +31,7 @@ public class Axopearl {
         InitPotions.POTION_ITEMS.register(bus);
         InitDataComponentTypes.DATA_COMPONENTS.register(bus);
         InitCreativeTabs.TABS.register(bus);
+        InitRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
         InitLootModifiers.LOOT_MODIFIERS.register(bus);
         // Register the item to a vanilla creative tab
         bus.addListener(this::addCreative);
@@ -60,6 +62,7 @@ public class Axopearl {
             event.accept(InitItems.CALCIUM_PASTE);
             event.accept(InitItems.CALCIUM_SHELL);
             event.accept(InitItems.WHITE_TECHPEARL);
+            event.accept(InitItems.ENCHANTED_TECHPEARL);
             event.accept(InitItems.TECHPEARL_OF_INFINITY);
             event.accept(InitItems.TECHPEARL_OF_METABOLISM);
             event.accept(InitItems.TECHPEARL_OF_MOBILITY);

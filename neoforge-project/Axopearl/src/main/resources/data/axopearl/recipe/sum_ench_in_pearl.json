@@ -1,0 +1,9 @@
+{
+    "type": "axopearl:sum_enchant_recipe",
+    "ingredient_to_ench": "#axopearl:pearls",
+    "ingredient_ench_source": "minecraft:enchanted_book",
+    "return_item": {
+        "id": "minecraft:book",
+        "count": 1
+    }
+}

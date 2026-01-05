@@ -208,12 +208,10 @@ public class AxolotlShelterBlock extends BaseEntityBlock {
     }
 
     // IMPLEMENTS
-    @Nullable
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new AxolotlShelterBlockEntity(pos, state);
     };
 
-    @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return level.isClientSide() ? null : createTickerHelper(blockEntityType, InitBlockEntities.AXOLOTL_SHELTER_BE.get(), AxolotlShelterBlockEntity::serverTick);
     }

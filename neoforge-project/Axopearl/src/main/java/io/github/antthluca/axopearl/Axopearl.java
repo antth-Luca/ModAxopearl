@@ -73,6 +73,7 @@ public class Axopearl {
         if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             // Block Items
             event.accept(InitBlockItems.AXOLOTL_SHELTER);
+            event.accept(InitBlockItems.ELETRIC_ANVIL);
         }
 
         if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {

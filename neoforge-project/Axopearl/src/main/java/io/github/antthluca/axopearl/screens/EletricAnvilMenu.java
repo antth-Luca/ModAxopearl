@@ -87,10 +87,10 @@ public class EletricAnvilMenu extends ItemCombinerMenu {
 
     // MAIN
     protected void createResultInternal() {
-        int changed = 0;
-        int xpCost = 0;
-        int sumRepairCost = 0;
         for (int iSlot = INPUT_SLOT_START; iSlot < INPUT_SLOT_END + 1; iSlot++) {
+            int xpCost = 0;
+            int sumRepairCost = 0;
+
             ItemStack inputStack = this.inputSlots.getItem(iSlot);
             ItemStack inputCopy = inputStack.copy();
 
@@ -104,19 +104,19 @@ public class EletricAnvilMenu extends ItemCombinerMenu {
                     boolean addHasEnchs = addStack.has(addComponentType);
 
                     if (inputCopy.isDamageableItem() && inputStack.isValidRepairItem(addStack)) {
-                        int d = Math.min(inputCopy.getDamageValue(), inputCopy.getMaxDamage() / 4);
-                        if (d <= 0) {
+                        int repairStep = Math.min(inputCopy.getDamageValue(), inputCopy.getMaxDamage() / 4);
+                        if (repairStep <= 0) {
                             this.resultSlots.setItem(iSlot + 5, ItemStack.EMPTY);
                             this.cost.set(0);
                             return;
                         }
 
                         int countMat;
-                        for (countMat = 0; d > 0 && countMat < addStack.getCount(); ++countMat) {
-                            int newDamage = inputCopy.getDamageValue() - d;
+                        for (countMat = 0; repairStep > 0 && countMat < addStack.getCount(); ++countMat) {
+                            int newDamage = inputCopy.getDamageValue() - repairStep;
                             inputCopy.setDamageValue(newDamage);
                             ++xpCost;
-                            d = Math.min(inputCopy.getDamageValue(), inputCopy.getMaxDamage() / 4);
+                            repairStep = Math.min(inputCopy.getDamageValue(), inputCopy.getMaxDamage() / 4);
                         }
 
                         this.repairItemCountCost = countMat;

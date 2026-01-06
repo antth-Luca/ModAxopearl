@@ -1,9 +1,8 @@
 {
-    "parent": "minecraft:block/orientable_with_bottom",
+    "parent": "minecraft:block/cube_bottom_top",
     "textures": {
         "bottom": "minecraft:block/anvil",
-        "particle": "axopearl:block/eletric_anvil_side",
-        "side": "axopearl:block/eletric_anvil_side",
-        "top": "axopearl:block/eletric_anvil_top"
+        "top": "axopearl:block/eletric_anvil_top",
+        "side": "axopearl:block/eletric_anvil_side"
     }
 }

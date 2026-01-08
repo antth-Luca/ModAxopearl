@@ -87,7 +87,7 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
         if (xpCost > 0) {
             int color = -8323296;
             Component component = null;
-            for (int o = EletricAnvilMenu.OUTPUT_SLOT_START; o < EletricAnvilMenu.OUTPUT_SLOT_END + 1; o++) {
+            for (int o = EletricAnvilMenu.OUTPUT_SLOT_START; o < EletricAnvilMenu.PLAYER_INV_SLOT_START; o++) {
                 Slot outSlot = this.menu.getSlot(o);
                 if (outSlot.hasItem() && component == null) {
                     component = Component.translatable("container.repair_without_name", xpCost);
@@ -98,7 +98,7 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
             }
 
             if (component != null) {
-                int calcW = this.imageWidth - 8 - this.font.width(component) - 2;
+                int calcW = this.imageWidth - 12 - this.font.width(component) - 2;
                 int h = 98;
                 guiGraphics.fill(calcW - 2, 96, this.imageWidth - 8, 88, 1325400064);
                 guiGraphics.drawString(this.font, component, calcW, h, color);
@@ -109,23 +109,22 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
     // MAIN
     protected void renderErrorIcon(GuiGraphics guiGraphics, int var1, int var2) {
         if (this.menu.getSlot(EletricAnvilMenu.ADDITIONAL_SLOT).hasItem()) {
-            for (int i = EletricAnvilMenu.INPUT_SLOT_START; i < EletricAnvilMenu.INPUT_SLOT_END + 1; i++) {
+            for (int i = EletricAnvilMenu.INPUT_SLOT_START; i < EletricAnvilMenu.ADDITIONAL_SLOT; i++) {
                 Slot inpSlot = this.menu.getSlot(i);
-                int o = i + 5;
-                if (inpSlot.hasItem() && !this.menu.getSlot(o).hasItem()) {
+                if (inpSlot.hasItem() && !this.menu.getSlot(i).hasItem()) {
                     int calcX = 0;
                     int calcY = 0;
 
-                    if (o == 5) {
+                    if (i == 5) {
                         calcX = var1 + 99;
                         calcY = var2 + 5;
-                    } else if (o == 6) {
+                    } else if (i == 6) {
                         calcX = var1 + 109;
                         calcY = var2 + 27;
-                    } else if (o == 7) {
+                    } else if (i == 7) {
                         calcX = var1 + 109;
                         calcY = var2 + 51;
-                    } else if (o == 8) {
+                    } else if (i == 8) {
                         calcX = var1 + 99;
                         calcY = var2 + 73;
                     }

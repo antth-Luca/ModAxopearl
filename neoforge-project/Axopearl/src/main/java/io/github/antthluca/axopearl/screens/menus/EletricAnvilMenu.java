@@ -27,10 +27,14 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
     public static final int SLOTS_PER_ROW = 9;
     public static final int ROWS_PER_INV = 3;
     public static final int INPUT_SLOT_START = 0;
-    public static final int INPUT_SLOT_END = 3;
+    public static final int INPUT_SLOT_END = 4;
     public static final int ADDITIONAL_SLOT = 4;
     public static final int OUTPUT_SLOT_START = 5;
     public static final int OUTPUT_SLOT_END = 8;
+    public static final int PLAYER_INV_SLOT_START = 9;
+    public static final int PLAYER_INV_SLOT_END = 36;
+    public static final int PLAYER_HOTBAR_SLOT_START = 37;
+    public static final int PLAYER_HOTBAR_SLOT_END = 46;
     public int repairItemCountCost;
     private final int resultSlotIndex;
     protected final ContainerLevelAccess access;
@@ -128,16 +132,6 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
 
     public void setCost(int value) { this.cost.set(Math.max(0, value)); }
 
-    private int getInventorySlotStart() { return this.getResultSlot() + 1; }
-
-    private int getInventorySlotEnd() { return this.getInventorySlotStart() + 27; }
-
-    private int getUseRowStart() { return this.getInventorySlotEnd(); }
-
-    private int getUseRowEnd() { return this.getUseRowStart() + 9; }
-
-    private int getResultSlot() { return this.resultSlotIndex; }
-
     //SUPER
     @Override
     public void slotsChanged(Container cont) {
@@ -164,47 +158,34 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int idx) {
-        ItemStack stackCopy = ItemStack.EMPTY;
-        Slot slot = (Slot) this.slots.get(idx);
-        if (slot != null && slot.hasItem()) {
-            ItemStack slotStack = slot.getItem();
-            stackCopy = slotStack.copy();
-            int invStart = this.getInventorySlotStart();
-            int useRowEnd = this.getUseRowEnd();
-            if (idx == this.getResultSlot()) {
-                if (!this.moveItemStackTo(slotStack, invStart, useRowEnd, true)) {
-                    return ItemStack.EMPTY;
-                }
+        Slot slot = this.slots.get(idx);
+        if (slot == null || !slot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
 
-                slot.onQuickCraft(slotStack, stackCopy);
-            } else if (idx >= 0 && idx < this.getResultSlot()) {
-                if (!this.moveItemStackTo(slotStack, invStart, useRowEnd, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (this.canMoveIntoInputSlot(slotStack) && idx >= this.getInventorySlotStart() && idx < this.getUseRowEnd()) {
-                if (!this.moveItemStackTo(slotStack, 0, this.getResultSlot(), false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (idx >= this.getInventorySlotStart() && idx < this.getInventorySlotEnd()) {
-                if (!this.moveItemStackTo(slotStack, this.getUseRowStart(), this.getUseRowEnd(), false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (idx >= this.getUseRowStart() && idx < this.getUseRowEnd()
-                && !this.moveItemStackTo(slotStack, this.getInventorySlotStart(), this.getInventorySlotEnd(), false)) {
-                return ItemStack.EMPTY;
-            }
+        ItemStack slotStack = slot.getItem();
+        ItemStack stackCopy = slotStack.copy();
 
-            if (slotStack.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            if (slotStack.getCount() == stackCopy.getCount()) {
+        if (idx >= OUTPUT_SLOT_START && idx <= OUTPUT_SLOT_END) {
+            if (!this.moveItemStackTo(slotStack, PLAYER_INV_SLOT_START, PLAYER_HOTBAR_SLOT_END, true)) {
                 return ItemStack.EMPTY;
             }
 
             slot.onTake(player, slotStack);
+        } else if (idx >= PLAYER_INV_SLOT_START) {
+            if (!this.moveItemStackTo(slotStack, INPUT_SLOT_START, OUTPUT_SLOT_START, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else {
+            if (!this.moveItemStackTo(slotStack, PLAYER_INV_SLOT_START, PLAYER_HOTBAR_SLOT_END, false)) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        if (slotStack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
         }
 
         return stackCopy;
@@ -240,7 +221,7 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
 
         this.setCost(0);
         
-        for (int c = 0; c < INPUT_SLOT_END + 1; c++) {
+        for (int c = INPUT_SLOT_START; c < ADDITIONAL_SLOT; c++) {
             this.inputSlots.setItem(c, ItemStack.EMPTY);
         }
         this.access.execute((level, pos) -> level.levelEvent(1030, pos, 0));
@@ -251,11 +232,11 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
     }
 
     protected void createResultInternal() {
-        for (int iSlot = INPUT_SLOT_START; iSlot < INPUT_SLOT_END + 1; iSlot++) {
+        for (int i = INPUT_SLOT_START; i < ADDITIONAL_SLOT; i++) {
             int xpCost = 0;
             int sumRepairCost = 0;
 
-            ItemStack inputStack = this.inputSlots.getItem(iSlot);
+            ItemStack inputStack = this.inputSlots.getItem(i);
             ItemStack inputCopy = inputStack.copy();
 
             if (!inputStack.isEmpty() && EnchantmentHelper.canStoreEnchantments(inputStack)) {
@@ -270,7 +251,7 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
                     if (inputCopy.isDamageableItem() && inputStack.isValidRepairItem(addStack)) {
                         int repairStep = Math.min(inputCopy.getDamageValue(), inputCopy.getMaxDamage() / 4);
                         if (repairStep <= 0) {
-                            this.resultSlots.setItem(iSlot + 5, ItemStack.EMPTY);
+                            this.resultSlots.setItem(i, ItemStack.EMPTY);
                             this.cost.set(0);
                             return;
                         }
@@ -286,7 +267,7 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
                         this.repairItemCountCost = countMat;
                     } else {
                         if (!addHasEnchs && (!inputCopy.is(addStack.getItem()) || !inputCopy.isDamageableItem())) {
-                            this.resultSlots.setItem(iSlot + 5, ItemStack.EMPTY);
+                            this.resultSlots.setItem(i, ItemStack.EMPTY);
                             this.cost.set(0);
                             return;
                         }
@@ -348,7 +329,7 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
                         }
 
                         if (hasIncompEnch && !hasValidEnch) {
-                            this.resultSlots.setItem(iSlot + 5, ItemStack.EMPTY);
+                            this.resultSlots.setItem(i, ItemStack.EMPTY);
                             this.cost.set(0);
                             return;
                         }
@@ -371,10 +352,10 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
                     EnchantmentHelper.setEnchantments(inputCopy, inputEnchs.toImmutable());
                 }
 
-                this.resultSlots.setItem(iSlot + 5, inputCopy);
+                this.resultSlots.setItem(i, inputCopy);
                 this.broadcastChanges();
             } else {
-                this.resultSlots.setItem(iSlot + 5, ItemStack.EMPTY);
+                this.resultSlots.setItem(i, ItemStack.EMPTY);
                 this.cost.set(0);
             }
         }

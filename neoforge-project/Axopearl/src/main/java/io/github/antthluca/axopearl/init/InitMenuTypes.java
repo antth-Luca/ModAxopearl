@@ -1,7 +1,7 @@
 package io.github.antthluca.axopearl.init;
 
 import io.github.antthluca.axopearl.Axopearl;
-import io.github.antthluca.axopearl.screens.EletricAnvilMenu;
+import io.github.antthluca.axopearl.screens.menus.EletricAnvilMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;

@@ -7,6 +7,7 @@ import io.github.antthluca.axopearl.init.InitCreativeTabs;
 import io.github.antthluca.axopearl.init.InitDataComponentTypes;
 import io.github.antthluca.axopearl.init.InitItems;
 import io.github.antthluca.axopearl.init.InitLootModifiers;
+import io.github.antthluca.axopearl.init.InitMenuTypes;
 import io.github.antthluca.axopearl.init.InitMobEffects;
 import io.github.antthluca.axopearl.init.InitPotions;
 import io.github.antthluca.axopearl.init.InitRecipeSerializers;
@@ -33,6 +34,7 @@ public class Axopearl {
         InitCreativeTabs.TABS.register(bus);
         InitRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
         InitLootModifiers.LOOT_MODIFIERS.register(bus);
+        InitMenuTypes.MENU_TYPES.register(bus);
         // Register the item to a vanilla creative tab
         bus.addListener(this::addCreative);
     }

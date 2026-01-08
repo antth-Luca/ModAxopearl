@@ -3,6 +3,7 @@
 
   "container.axolotl_shelter.axolotls": "Axolotls: %s / %s",
   "container.axolotl_shelter.goo_level": "Goo: %s / %s",
+  "container.repair_without_name": "Repair",
 
   "effect.axopearl.axolotl_burst_of_energy": "Axolotl Burst of Energy",
 

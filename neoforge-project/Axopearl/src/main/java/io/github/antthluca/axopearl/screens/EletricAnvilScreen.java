@@ -25,7 +25,10 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
     public EletricAnvilScreen(EletricAnvilMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.player = playerInventory.player;
-        this.titleLabelX = 60;
+        this.imageWidth = 176;
+        this.imageHeight = 195;
+        this.titleLabelX = 56;
+        this.inventoryLabelY = imageHeight - 94;
     }
 
     protected void init() {
@@ -90,7 +93,7 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
             for (int o = EletricAnvilMenu.OUTPUT_SLOT_START; o < EletricAnvilMenu.PLAYER_INV_SLOT_START; o++) {
                 Slot outSlot = this.menu.getSlot(o);
                 if (outSlot.hasItem() && component == null) {
-                    component = Component.translatable("container.repair_without_name", xpCost);
+                    component = Component.translatable("container.repair.cost", xpCost);
                     if (!outSlot.mayPickup(this.player)) {
                         color = -40864;
                     }
@@ -98,9 +101,9 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
             }
 
             if (component != null) {
-                int calcW = this.imageWidth - 12 - this.font.width(component) - 2;
+                int calcW = this.imageWidth - 8 - this.font.width(component) - 2;
                 int h = 98;
-                guiGraphics.fill(calcW - 2, 96, this.imageWidth - 8, 88, 1325400064);
+                guiGraphics.fill(calcW - 2, 97, this.imageWidth - 8, 108, 1325400064);
                 guiGraphics.drawString(this.font, component, calcW, h, color);
             }
         }

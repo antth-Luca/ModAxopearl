@@ -17,8 +17,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu> implements ContainerListener {
-    private static final ResourceLocation ERROR_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/error");
-    private final ResourceLocation menuResource = ResourceLocation.fromNamespaceAndPath(Axopearl.MODID, "textures/gui/container/eletric_anvil.png");
+    private static final ResourceLocation ERROR_SPRITE = ResourceLocation.fromNamespaceAndPath(Axopearl.MODID, "container/eletric_anvil/x_error.png");
+    private final ResourceLocation ELETRIC_ANVIL_CONTAINER = ResourceLocation.fromNamespaceAndPath(Axopearl.MODID, "textures/gui/container/eletric_anvil.png");
     private final Player player;
 
     // CONSTRUCTOR
@@ -58,7 +58,7 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.menuResource, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.ELETRIC_ANVIL_CONTAINER, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
         this.renderErrorIcon(guiGraphics, this.leftPos, this.topPos);
     }
 
@@ -113,21 +113,20 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
     protected void renderErrorIcon(GuiGraphics guiGraphics, int var1, int var2) {
         if (this.menu.getSlot(EletricAnvilMenu.ADDITIONAL_SLOT).hasItem()) {
             for (int i = EletricAnvilMenu.INPUT_SLOT_START; i < EletricAnvilMenu.ADDITIONAL_SLOT; i++) {
-                Slot inpSlot = this.menu.getSlot(i);
-                if (inpSlot.hasItem() && !this.menu.getSlot(i).hasItem()) {
+                if (this.menu.getSlot(i).hasItem() && !this.menu.getSlot(i + 5).hasItem()) {
                     int calcX = 0;
                     int calcY = 0;
 
-                    if (i == 5) {
+                    if (i == 0) {
                         calcX = var1 + 99;
                         calcY = var2 + 5;
-                    } else if (i == 6) {
+                    } else if (i == 1) {
                         calcX = var1 + 109;
                         calcY = var2 + 27;
-                    } else if (i == 7) {
+                    } else if (i == 2) {
                         calcX = var1 + 109;
                         calcY = var2 + 51;
-                    } else if (i == 8) {
+                    } else if (i == 3) {
                         calcX = var1 + 99;
                         calcY = var2 + 73;
                     }
@@ -135,8 +134,6 @@ public class EletricAnvilScreen extends AbstractContainerScreen<EletricAnvilMenu
                     guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ERROR_SPRITE, calcX, calcY, 28, 21);
                 }
             }
-        } else {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ERROR_SPRITE, var1 + 85, var2 + 39, 28, 21);
         }
     }
 }

@@ -1,13 +1,14 @@
 package io.github.antthluca.axopearl.screens.menus;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import io.github.antthluca.axopearl.init.InitBlocks;
 import io.github.antthluca.axopearl.init.InitMenuTypes;
+import io.github.antthluca.axopearl.utils.EnchantmentUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -35,7 +36,6 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
     public static final int PLAYER_INV_SLOT_END = 36;
     public static final int PLAYER_HOTBAR_SLOT_START = 37;
     public static final int PLAYER_HOTBAR_SLOT_END = 46;
-    public int repairItemCountCost;
     private final int resultSlotIndex;
     protected final ContainerLevelAccess access;
     protected final Player player;
@@ -208,22 +208,12 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
         if (!player.hasInfiniteMaterials()) {
             player.giveExperienceLevels(-this.getCost());
         }
-
-        if (this.repairItemCountCost > 0) {
-            ItemStack addStack = this.inputSlots.getItem(ADDITIONAL_SLOT);
-            if (!addStack.isEmpty() && addStack.getCount() > this.repairItemCountCost) {
-                addStack.shrink(this.repairItemCountCost);
-                this.inputSlots.setItem(ADDITIONAL_SLOT, addStack);
-            } else {
-                this.inputSlots.setItem(ADDITIONAL_SLOT, ItemStack.EMPTY);
-            }
-        }
-
         this.setCost(0);
         
-        for (int c = INPUT_SLOT_START; c < ADDITIONAL_SLOT; c++) {
+        for (int c = INPUT_SLOT_START; c < OUTPUT_SLOT_START; c++) {
             this.inputSlots.setItem(c, ItemStack.EMPTY);
         }
+
         this.access.execute((level, pos) -> level.levelEvent(1030, pos, 0));
     }
 
@@ -232,131 +222,47 @@ public class EletricAnvilMenu extends AbstractContainerMenu {
     }
 
     protected void createResultInternal() {
-        for (int i = INPUT_SLOT_START; i < ADDITIONAL_SLOT; i++) {
-            int xpCost = 0;
-            int sumRepairCost = 0;
+        ItemStack addStack = this.inputSlots.getItem(ADDITIONAL_SLOT);
+        if (!addStack.isEmpty() && EnchantmentHelper.canStoreEnchantments(addStack)) {
+            ItemEnchantments addEnchs = EnchantmentHelper.getEnchantmentsForCrafting(addStack);
 
-            ItemStack inputStack = this.inputSlots.getItem(i);
-            ItemStack inputCopy = inputStack.copy();
+            for (int c = INPUT_SLOT_START; c < ADDITIONAL_SLOT; c++) {
+                boolean changed = false;
+                ItemStack inpStack = this.inputSlots.getItem(c);
+                ItemEnchantments inpEnchs = EnchantmentHelper.getEnchantmentsForCrafting(inpStack);
+                ItemEnchantments.Mutable inpEnchsMutable = new ItemEnchantments.Mutable(inpEnchs);
+                int xpCost = 0;
+                int sumRepairCost = inpStack.getOrDefault(DataComponents.REPAIR_COST, 0) + addStack.getOrDefault(DataComponents.REPAIR_COST, 0);
 
-            if (!inputStack.isEmpty() && EnchantmentHelper.canStoreEnchantments(inputStack)) {
-                ItemStack addStack = this.inputSlots.getItem(ADDITIONAL_SLOT);
-                ItemEnchantments.Mutable inputEnchs = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(inputCopy));
-                sumRepairCost += (long) (Integer) inputStack.getOrDefault(DataComponents.REPAIR_COST, 0) + (long) (Integer) addStack.getOrDefault(DataComponents.REPAIR_COST, 0);
-
-                if (!addStack.isEmpty()) {
-                    DataComponentType addComponentType = EnchantmentHelper.getComponentType(addStack);
-                    boolean addHasEnchs = addStack.has(addComponentType);
-
-                    if (inputCopy.isDamageableItem() && inputStack.isValidRepairItem(addStack)) {
-                        int repairStep = Math.min(inputCopy.getDamageValue(), inputCopy.getMaxDamage() / 4);
-                        if (repairStep <= 0) {
-                            this.resultSlots.setItem(i, ItemStack.EMPTY);
-                            this.cost.set(0);
-                            return;
-                        }
-
-                        int countMat;
-                        for (countMat = 0; repairStep > 0 && countMat < addStack.getCount(); ++countMat) {
-                            int newDamage = inputCopy.getDamageValue() - repairStep;
-                            inputCopy.setDamageValue(newDamage);
-                            ++xpCost;
-                            repairStep = Math.min(inputCopy.getDamageValue(), inputCopy.getMaxDamage() / 4);
-                        }
-
-                        this.repairItemCountCost = countMat;
-                    } else {
-                        if (!addHasEnchs && (!inputCopy.is(addStack.getItem()) || !inputCopy.isDamageableItem())) {
-                            this.resultSlots.setItem(i, ItemStack.EMPTY);
-                            this.cost.set(0);
-                            return;
-                        }
-
-                        if (inputCopy.isDamageableItem() && !addHasEnchs) {
-                            int inpBaseDurab = inputStack.getMaxDamage() - inputStack.getDamageValue();
-                            int addBaseDurab = addStack.getMaxDamage() - addStack.getDamageValue();
-                            int repairDurab = inpBaseDurab + addBaseDurab
-                                + inputCopy.getMaxDamage() * 12 / 100;
-                            int repairDam = Math.max(0, inputCopy.getMaxDamage() - repairDurab);
-                            
-                            if (repairDam < inputCopy.getDamageValue()) {
-                                inputCopy.setDamageValue(repairDam);
-                                xpCost += 2;
-                            }
-                        }
-
-                        ItemEnchantments addEnchs = EnchantmentHelper.getEnchantmentsForCrafting(addStack);
-                        boolean hasValidEnch = false;
-                        boolean hasIncompEnch = false;
-
-                        for (Object2IntMap.Entry<Holder<Enchantment>> addEntry : addEnchs.entrySet()) {
-                            Holder<Enchantment> addHolder = (Holder) addEntry.getKey();
-                            int inputLevel = inputEnchs.getLevel(addHolder);
-                            int addLevel = addEntry.getIntValue();
-                            addLevel = inputLevel == addLevel ? addLevel + 1 : Math.max(addLevel, inputLevel);
-                            Enchantment ench = (Enchantment) addHolder.value();
-                            boolean inputSupport = inputStack.supportsEnchantment(addHolder);
-                            if (this.player.getAbilities().instabuild) {
-                                inputSupport = true;
-                            }
-
-                            for (Holder<Enchantment> inputHolder : inputEnchs.keySet()) {
-                                if (!inputHolder.equals(addHolder) && !Enchantment.areCompatible(addHolder, inputHolder)) {
-                                    inputSupport = false;
-                                    ++xpCost;
+                if (!inpStack.isEmpty() && EnchantmentHelper.canStoreEnchantments(inpStack)) {
+                    Iterator iterator = addEnchs.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Object2IntMap.Entry<Holder<Enchantment>> addEntry = (Object2IntMap.Entry) iterator.next();
+                        Holder<Enchantment> addKey = (Holder) addEntry.getKey();
+                        if (EnchantmentUtils.canEnchantPerSupport(inpStack.getItemHolder(), addKey)) {
+                            if (EnchantmentUtils.canEnchantPerCompatibility(inpEnchsMutable, addKey)) {
+                                int addLevel = addEntry.getIntValue();
+                                int inpLevel = inpEnchsMutable.getLevel(addKey);
+                                int finalLevel = inpLevel == addLevel ? addLevel + 1 : Math.max(inpLevel, addLevel);
+                                if (finalLevel != inpLevel) {
+                                    changed = true;
+                                    inpEnchsMutable.set(addKey, finalLevel);
+                                    xpCost += finalLevel - 1;
                                 }
                             }
-
-                            if (!inputSupport) {
-                                hasIncompEnch = true;
-                            } else {
-                                hasValidEnch = true;
-                                if (addLevel > ench.getMaxLevel()) {
-                                    addLevel = ench.getMaxLevel();
-                                }
-
-                                inputEnchs.set(addHolder, addLevel);
-                                int enchAnvilCost = ench.getAnvilCost();
-                                if (addHasEnchs) {
-                                    enchAnvilCost = Math.max(1, enchAnvilCost / 2);
-                                }
-
-                                xpCost += enchAnvilCost * addLevel;
-                                if (inputStack.getCount() > 1) {
-                                    xpCost = 40;
-                                }
-                            }
-                        }
-
-                        if (hasIncompEnch && !hasValidEnch) {
-                            this.resultSlots.setItem(i, ItemStack.EMPTY);
-                            this.cost.set(0);
-                            return;
                         }
                     }
                 }
 
-                int clampXpCost = xpCost <= 0 ? 0 : (int) Math.clamp(sumRepairCost + (long) xpCost, 0L, 2147483647L);
-                this.cost.set(clampXpCost);
-                if (xpCost <= 0) {
-                    inputCopy = ItemStack.EMPTY;
+                if (!changed) {
+                    this.resultSlots.setItem(c, ItemStack.EMPTY);
+                    this.cost.set(0);
+                } else {
+                    ItemStack resultStack = inpStack.copy();
+                    EnchantmentHelper.setEnchantments(resultStack, inpEnchsMutable.toImmutable());
+                    this.resultSlots.setItem(c, resultStack);
+                    this.cost.set(xpCost);
                 }
-
-                if (!inputCopy.isEmpty()) {
-                    int inputRepairCost = (Integer) inputCopy.getOrDefault(DataComponents.REPAIR_COST, 0);
-                    if (inputRepairCost < (Integer) addStack.getOrDefault(DataComponents.REPAIR_COST, 0)) {
-                        inputRepairCost = (Integer) addStack.getOrDefault(DataComponents.REPAIR_COST, 0);
-                    }
-
-                    inputCopy.set(DataComponents.REPAIR_COST, inputRepairCost);
-                    EnchantmentHelper.setEnchantments(inputCopy, inputEnchs.toImmutable());
-                }
-
-                this.resultSlots.setItem(i, inputCopy);
-                this.broadcastChanges();
-            } else {
-                this.resultSlots.setItem(i, ItemStack.EMPTY);
-                this.cost.set(0);
             }
         }
     }
